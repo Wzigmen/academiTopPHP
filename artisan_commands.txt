@@ -1,0 +1,12 @@
+As requested, here is an explanation of the `php artisan make` commands:
+
+`php artisan make:controller <ControllerName>`
+This command creates a new controller file in the `app/Http/Controllers` directory. Controllers are responsible for handling incoming HTTP requests and returning a response. For example, I used `php artisan make:controller AuthController` to create the controller that handles user registration.
+
+`php artisan make:model <ModelName>`
+This command creates a new Eloquent model file in the `app/Models` directory. Models are used to interact with your database tables. Each model corresponds to a table in your database. For example, `php artisan make:model User` would create a `User` model. By default, Laravel created this for us.
+
+`php artisan make:migration <migration_name>`
+This command creates a new migration file in the `database/migrations` directory. Migrations are like version control for your database, allowing you to define and share the application's database schema. For example, `php artisan make:migration create_users_table` creates a migration to create the `users` table. Laravel also created this for us by default.
+
+These commands are essential for building Laravel applications, as they help to scaffold the application's components quickly and consistently.
