@@ -14,7 +14,7 @@
                                 <ul>
                                     @foreach ($errors->all() as $error)
                                         <li>{{ $error }}</li>
-                                    @end{foreach}
+                                    @endforeach
                                 </ul>
                             </div>
                         @endif
@@ -29,6 +29,10 @@
                         <div class="mb-3">
                             <label for="password" class="form-label">Пароль</label>
                             <input type="password" name="password" id="password" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password_confirmation" class="form-label">Подтвердите пароль</label>
+                            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" required>
                         </div>
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary">Зарегистрироваться</button>

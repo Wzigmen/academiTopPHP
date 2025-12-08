@@ -22,4 +22,13 @@ class CommentController extends Controller
 
         return back()->with('status', 'Комментарий успешно добавлен!');
     }
+
+    public function destroy(Comment $comment)
+    {
+        $this->authorize('delete', $comment);
+
+        $comment->delete();
+
+        return back()->with('status', 'Комментарий успешно удален!');
+    }
 }

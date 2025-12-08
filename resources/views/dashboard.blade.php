@@ -63,10 +63,21 @@
                         <div class="card-footer">
                             <h6>Комментарии ({{ $post->comments->count() }})</h6>
                             @foreach ($post->comments as $comment)
-                                <div class="mb-2">
-                                    <small class="fw-bold">{{ $comment->user->name }}:</small>
-                                    <small>{{ $comment->body }}</small>
-                                    <small class="text-muted ms-2">{{ $comment->created_at->diffForHumans() }}</small>
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <small class="fw-bold">{{ $comment->user->name }}:</small>
+                                        <small>{{ $comment->body }}</small>
+                                        <small class="text-muted ms-2">{{ $comment->created_at->diffForHumans() }}</small>
+                                    </div>
+                                    @can('delete', $comment)
+                                        <form action="{{ route('comments.destroy', $comment) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Вы уверены?')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    @endcan
                                 </div>
                             @endforeach
                             @auth
@@ -88,6 +99,10 @@
                     </div>
                 </div>
             @endif
+
+            <div class="d-flex justify-content-center">
+                {{ $posts->links() }}
+            </div>
         </div>
     </div>
 </div>

@@ -10,6 +10,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
 Route::get('register', [AuthController::class, 'registerView'])->name('register.view');
 Route::post('register', [AuthController::class, 'register'])->name('register');
 
@@ -29,4 +33,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/posts/{post}/unlike', [PostController::class, 'unlike'])->name('posts.unlike');
 
     Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 });

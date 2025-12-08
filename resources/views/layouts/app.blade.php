@@ -21,6 +21,9 @@
                             <a class="nav-link" href="{{ route('dashboard') }}">Новости</a>
                         </li>
                     @endauth
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('about') }}">О нас</a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     @guest
