@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">Создание нового поста</div>
                 <div class="card-body">
-                    <form action="{{ route('posts.store') }}" method="POST">
+                    <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
                             <label for="title" class="form-label">Заголовок</label>
@@ -22,6 +22,15 @@
                             <label for="body" class="form-label">Содержание</label>
                             <textarea name="body" id="body" rows="5" class="form-control @error('body') is-invalid @enderror" required>{{ old('body') }}</textarea>
                             @error('body')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Изображение (PNG)</label>
+                            <input type="file" name="image" id="image" class="form-control @error('image') is-invalid @enderror" accept=".png">
+                            @error('image')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>

@@ -20,6 +20,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('dashboard') }}">Новости</a>
                         </li>
+                        @if(Auth::user()->is_admin)
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.users.index') }}">Админ-панель</a>
+                            </li>
+                        @endif
                     @endauth
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('about') }}">О нас</a>

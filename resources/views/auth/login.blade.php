@@ -26,7 +26,8 @@
                             <label for="password" class="form-label">Пароль</label>
                             <input type="password" name="password" id="password" class="form-control" required>
                         </div>
-                        <div class="d-grid">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{{ route('password.request') }}">Забыли пароль?</a>
                             <button type="submit" class="btn btn-primary">Войти</button>
                         </div>
                     </form>

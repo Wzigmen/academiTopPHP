@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -29,12 +30,22 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'body' => 'required|string',
+            'image' => 'nullable|image|mimes:png|max:2048', // Max 2MB
         ]);
 
-        $request->user()->posts()->create($request->only('title', 'body'));
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('posts', 'public');
+            $validatedData['image_path'] = $path;
+        }
+
+        $request->user()->posts()->create([
+            'title' => $validatedData['title'],
+            'body' => $validatedData['body'],
+            'image_path' => $validatedData['image_path'] ?? null,
+        ]);
 
         return redirect()->route('dashboard')->with('status', 'Пост успешно создан!');
     }
@@ -55,12 +66,22 @@ class PostController extends Controller
     {
         $this->authorize('update', $post);
 
-        $request->validate([
+        $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'body' => 'required|string',
+            'image' => 'nullable|image|mimes:png|max:2048', // Max 2MB
         ]);
 
-        $post->update($request->only('title', 'body'));
+        if ($request->hasFile('image')) {
+            // Delete old image if it exists
+            if ($post->image_path) {
+                Storage::disk('public')->delete($post->image_path);
+            }
+            $path = $request->file('image')->store('posts', 'public');
+            $validatedData['image_path'] = $path;
+        }
+
+        $post->update($validatedData);
 
         return redirect()->route('dashboard')->with('status', 'Пост успешно обновлен!');
     }
@@ -71,6 +92,10 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         $this->authorize('delete', $post);
+
+        if ($post->image_path) {
+            Storage::disk('public')->delete($post->image_path);
+        }
 
         $post->delete();
 

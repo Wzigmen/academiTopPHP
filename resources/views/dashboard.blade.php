@@ -19,12 +19,25 @@
                 @foreach ($posts as $post)
                     <div class="card mb-4">
                         <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                @if($post->user->avatar)
+                                    <img src="{{ asset('storage/' . $post->user->avatar) }}"
+                                         alt="{{ $post->user->name }}" class="rounded-circle me-3" width="50" height="50">
+                                @else
+                                    <i class="bi bi-person-circle me-3" style="font-size: 50px; color: #6c757d;"></i>
+                                @endif
+                                <div>
+                                    <h6 class="mb-0">{{ $post->user->name }}</h6>
+                                </div>
+                            </div>
                             <h5 class="card-title">{{ $post->title }}</h5>
                             <p class="card-text">{{ $post->body }}</p>
+                            @if ($post->image_path)
+                                <img src="{{ asset('storage/' . $post->image_path) }}" alt="Изображение поста" class="img-fluid rounded mt-3">
+                            @endif
                             <div class="d-flex justify-content-between align-items-center mt-3">
                                 <div>
-                                    <small class="text-muted">Автор: {{ $post->user->name }}</small>
-                                    <small class="text-muted ms-2">{{ $post->created_at->format('d.m.Y H:i') }}</small>
+                                    <small class="text-muted">{{ $post->created_at->format('d.m.Y H:i') }}</small>
                                 </div>
                                 <div class="d-flex align-items-center">
                                     @auth
