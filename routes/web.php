@@ -15,6 +15,9 @@ Route::get('/', function () {
 Route::get('/about', function () {
     return view('about');
 })->name('about');
+
+Route::get('/users/{user}', [\App\Http\Controllers\UserController::class, 'show'])->name('users.show');
+
 Route::get('register', [AuthController::class, 'registerView'])->name('register.view');
 Route::post('register', [AuthController::class, 'register'])->name('register');
 

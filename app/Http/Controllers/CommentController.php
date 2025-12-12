@@ -13,11 +13,13 @@ class CommentController extends Controller
     {
         $request->validate([
             'body' => 'required|string',
+            'parent_id' => 'nullable|exists:comments,id',
         ]);
 
         $post->comments()->create([
             'user_id' => Auth::id(),
             'body' => $request->body,
+            'parent_id' => $request->parent_id,
         ]);
 
         return back()->with('status', 'Комментарий успешно добавлен!');

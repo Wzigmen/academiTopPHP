@@ -13,7 +13,11 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with('user', 'comments.user', 'likers')->latest()->simplePaginate(5);
+        $posts = Post::with(['user', 'likers', 'comments' => function ($query) {
+            $query->whereNull('parent_id')->with(['user', 'replies' => function($query){
+                $query->with(['user', 'replies']);
+            }]);
+        }])->latest()->simplePaginate(5);
         return view('dashboard', compact('posts'));
     }
 

@@ -4,32 +4,35 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="mb-0">Лента новостей</h2>
-                <a href="{{ route('posts.create') }}" class="btn btn-primary">Создать пост</a>
+            <div class="d-flex align-items-center mb-3">
+                @if($user->avatar)
+                    <img src="{{ asset('storage/' . $user->avatar) }}"
+                         alt="{{ $user->name }}" class="rounded-circle me-3" width="100" height="100">
+                @else
+                    <i class="bi bi-person-circle me-3" style="font-size: 100px; color: #6c757d;"></i>
+                @endif
+                <div>
+                    <h2 class="mb-0">{{ $user->name }}</h2>
+                </div>
             </div>
 
-            @if (session('status'))
-                <div class="alert alert-success" role="alert">
-                    {{ session('status') }}
-                </div>
-            @endif
+            <hr>
 
-            @if($posts->count())
-                @foreach ($posts as $post)
+            <h3>Посты пользователя</h3>
+
+            @if($user->posts->count())
+                @foreach ($user->posts as $post)
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
-                                <a href="{{ route('users.show', $post->user) }}" class="text-decoration-none text-dark">
                                 @if($post->user->avatar)
                                     <img src="{{ asset('storage/' . $post->user->avatar) }}"
                                          alt="{{ $post->user->name }}" class="rounded-circle me-3" width="50" height="50">
                                 @else
                                     <i class="bi bi-person-circle me-3" style="font-size: 50px; color: #6c757d;"></i>
                                 @endif
-                                </a>
                                 <div>
-                                    <a href="{{ route('users.show', $post->user) }}" class="text-decoration-none text-dark"><h6 class="mb-0">{{ $post->user->name }}</h6></a>
+                                    <h6 class="mb-0">{{ $post->user->name }}</h6>
                                 </div>
                             </div>
                             <h5 class="card-title">{{ $post->title }}</h5>
@@ -95,14 +98,10 @@
             @else
                 <div class="card">
                     <div class="card-body">
-                        <p class="card-text">Постов пока нет. Создайте первый!</p>
+                        <p class="card-text">У этого пользователя пока нет постов.</p>
                     </div>
                 </div>
             @endif
-
-            <div class="d-flex justify-content-center">
-                {{ $posts->links() }}
-            </div>
         </div>
     </div>
 </div>
