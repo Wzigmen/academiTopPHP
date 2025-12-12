@@ -13,29 +13,8 @@ class MovieController extends Controller
     {
         $query = $request->input('query');
         $type = $request->input('type', 'movie');
-        $results = [];
-        $error = null;
+        $apiKey = env('TMDB_API_KEY');
 
-        if ($query) {
-            $endpoint = $type === 'movie' ? 'search/movie' : 'search/tv';
-
-            try {
-                $response = Http::withoutVerifying()->get("https://api.themoviedb.org/3/{$endpoint}", [
-                    'api_key' => env('TMDB_API_KEY'),
-                    'query' => $query,
-                    'language' => 'ru-RU',
-                ]);
-
-                if ($response->successful()) {
-                    $results = $response->json()['results'];
-                } else {
-                    $error = 'Не удалось получить данные от API.';
-                }
-            } catch (ConnectionException $e) {
-                $error = 'Не удалось подключиться к API. Пожалуйста, проверьте ваше интернет-соединение и попробуйте еще раз.';
-            }
-        }
-
-        return view('movies.search', compact('results', 'query', 'type', 'error'));
+        return view('movies.search', compact('query', 'type', 'apiKey'));
     }
 }
