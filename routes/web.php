@@ -46,6 +46,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+
+    Route::post('/friends/send/{user}', [\App\Http\Controllers\FriendController::class, 'sendRequest'])->name('friends.send');
+    Route::post('/friends/accept/{user}', [\App\Http\Controllers\FriendController::class, 'acceptRequest'])->name('friends.accept');
+    Route::post('/friends/remove/{user}', [\App\Http\Controllers\FriendController::class, 'removeFriend'])->name('friends.remove');
+    Route::get('/users/{user}/friends', [\App\Http\Controllers\FriendController::class, 'index'])->name('friends.index');
 });
 
 // Admin Routes

@@ -13,8 +13,81 @@
                 @endif
                 <div>
                     <h2 class="mb-0">{{ $user->name }}</h2>
+                    @auth
+                        @if(Auth::user()->id !== $user->id)
+                            <div class="mt-2">
+                                @if (Auth::user()->isFriendsWith($user))
+                                    <form action="{{ route('friends.remove', $user) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger">Удалить из друзей</button>
+                                    </form>
+                                @elseif (Auth::user()->hasSentFriendRequestTo($user))
+                                    <button type="button" class="btn btn-secondary" disabled>Запрос отправлен</button>
+                                @elseif (Auth::user()->hasPendingFriendRequestFrom($user))
+                                    <form action="{{ route('friends.accept', $user) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success">Принять запрос</button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('friends.send', $user) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-primary">Добавить в друзья</button>
+                                    </form>
+                                @endif
+                            </div>
+                        @endif
+                    @endauth
                 </div>
             </div>
+
+            @if (session('status'))
+                <div class="alert alert-success" role="alert">
+                    {{ session('status') }}
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="alert alert-danger" role="alert">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            @if (Auth::user()->id === $user->id && Auth::user()->friendRequests->count())
+                <div class="my-4">
+                    <h4>Запросы в друзья</h4>
+                    @foreach (Auth::user()->friendRequests as $request)
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div>
+                                <a href="{{ route('users.show', $request->user) }}" class="text-decoration-none text-dark">
+                                    @if($request->user->avatar)
+                                        <img src="{{ asset('storage/' . $request->user->avatar) }}"
+                                             alt="{{ $request->user->name }}" class="rounded-circle me-2" width="40" height="40">
+                                    @else
+                                        <i class="bi bi-person-circle me-2" style="font-size: 40px; color: #6c757d;"></i>
+                                    @endif
+                                    {{ $request->user->name }}
+                                </a>
+                            </div>
+                            <div>
+                                <form action="{{ route('friends.accept', $request->user) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-success">Принять</button>
+                                </form>
+                                <form action="{{ route('friends.remove', $request->user) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-danger">Отклонить</button>
+                                </form>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
+            @if ($user->friends->count())
+                <div class="my-4">
+                    <h4>Друзья ({{$user->friends->count()}})</h4>
+                    <a href="{{ route('friends.index', $user) }}" class="btn btn-primary">Посмотреть</a>
+                </div>
+            @endif
 
             <hr>
 
