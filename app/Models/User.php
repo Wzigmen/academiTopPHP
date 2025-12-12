@@ -22,6 +22,16 @@ class User extends Authenticatable
         'email',
         'password',
         'avatar',
+        'is_admin',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'is_admin' => 'boolean',
     ];
 
     /**
@@ -97,5 +107,40 @@ class User extends Authenticatable
         })->orWhere(function ($query) use ($user) {
             $query->where('user_id', $user->id)->where('friend_id', $this->id);
         })->first();
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
+
+    public function hasUnreadMessagesFrom(User $user)
+    {
+        return Message::where('sender_id', $user->id)
+            ->where('receiver_id', $this->id)
+            ->whereNull('read_at')
+            ->exists();
+    }
+
+    public function getConversationsAttribute()
+    {
+        $sent = $this->sentMessages()->with('receiver')->get()->pluck('receiver');
+        $received = $this->receivedMessages()->with('sender')->get()->pluck('sender');
+
+        return $sent->merge($received)->unique('id')->sortByDesc(function ($user) {
+            $lastMessage = Message::where(function ($query) use ($user) {
+                $query->where('sender_id', $this->id)
+                    ->where('receiver_id', $user->id);
+            })->orWhere(function ($query) use ($user) {
+                $query->where('sender_id', $user->id)
+                    ->where('receiver_id', $this->id);
+            })->latest()->first();
+            return $lastMessage->created_at;
+        });
     }
 }

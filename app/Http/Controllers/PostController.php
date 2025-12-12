@@ -26,6 +26,9 @@ class PostController extends Controller
      */
     public function create()
     {
+        if (!auth()->user()->is_admin) {
+            abort(403);
+        }
         return view('posts.create');
     }
 
@@ -34,6 +37,10 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->is_admin) {
+            abort(403);
+        }
+
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'body' => 'required|string',

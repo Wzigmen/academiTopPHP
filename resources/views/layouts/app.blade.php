@@ -23,6 +23,14 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('friends.index', Auth::user()) }}">Друзья</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('messages.index') }}">
+                                Сообщения
+                                @if(isset($unreadMessagesCount) && $unreadMessagesCount > 0)
+                                    <span class="badge bg-danger rounded-pill">{{ $unreadMessagesCount }}</span>
+                                @endif
+                            </a>
+                        </li>
                         @if(Auth::user()->is_admin)
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.users.index') }}">Админ-панель</a>

@@ -51,6 +51,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/friends/accept/{user}', [\App\Http\Controllers\FriendController::class, 'acceptRequest'])->name('friends.accept');
     Route::post('/friends/remove/{user}', [\App\Http\Controllers\FriendController::class, 'removeFriend'])->name('friends.remove');
     Route::get('/users/{user}/friends', [\App\Http\Controllers\FriendController::class, 'index'])->name('friends.index');
+
+    Route::get('/messages', [\App\Http\Controllers\MessageController::class, 'index'])->name('messages.index');
+    Route::get('/messages/{user}', [\App\Http\Controllers\MessageController::class, 'show'])->name('messages.show');
+    Route::post('/messages/{user}', [\App\Http\Controllers\MessageController::class, 'store'])->name('messages.store');
 });
 
 // Admin Routes
