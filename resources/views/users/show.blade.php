@@ -82,12 +82,26 @@
                 </div>
             @endif
 
-            @if ($user->friends->count())
-                <div class="my-4">
-                    <h4>Друзья ({{$user->friends->count()}})</h4>
-                    <a href="{{ route('friends.index', $user) }}" class="btn btn-primary">Посмотреть</a>
+            <div class="row text-center my-4">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Друзья</h5>
+                            <p class="card-text fs-4">{{ $user->friends_of_mine_count + $user->friend_of_count }}</p>
+                            <a href="{{ route('friends.index', $user) }}" class="btn btn-primary">Посмотреть</a>
+                        </div>
+                    </div>
                 </div>
-            @endif
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Вот что я смотрел</h5>
+                            <p class="card-text fs-4">{{ $user->watched_movies_count }}</p>
+                            <a href="{{ route('users.watched', $user) }}" class="btn btn-primary">Посмотреть</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <hr>
 

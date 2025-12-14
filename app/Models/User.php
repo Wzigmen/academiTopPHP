@@ -143,4 +143,14 @@ class User extends Authenticatable
             return $lastMessage->created_at;
         });
     }
+
+    public function watchedMovies()
+    {
+        return $this->hasMany(WatchedMovie::class);
+    }
+
+    public function ratedMovies()
+    {
+        return $this->belongsToMany(Movie::class, 'watched_movies')->withPivot('rating')->withTimestamps();
+    }
 }

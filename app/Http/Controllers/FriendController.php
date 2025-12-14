@@ -10,17 +10,32 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class FriendController extends Controller
 {
-    public function index(User $user)
+    public function index(Request $request, User $user)
     {
-        $friends = $user->friends;
-        $perPage = 10;
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $currentItems = $friends->slice(($currentPage - 1) * $perPage, $perPage)->all();
-        $friends = new LengthAwarePaginator($currentItems, $friends->count(), $perPage, $currentPage, [
-            'path' => LengthAwarePaginator::resolveCurrentPath(),
-        ]);
+        $query = $request->input('query');
 
-        return view('friends.index', compact('user', 'friends'));
+        if ($query) {
+            // Search mode
+            $users = User::whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($query) . '%'])
+                ->where('id', '!=', Auth::id())
+                ->paginate(10)
+                ->appends(['query' => $query]); // Keep query in pagination links
+
+            $viewData = ['users' => $users, 'query' => $query, 'user' => $user, 'isSearch' => true];
+        } else {
+            // Friends list mode
+            $friends = $user->friends;
+            $perPage = 10;
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $currentItems = $friends->slice(($currentPage - 1) * $perPage, $perPage)->all();
+            $paginatedFriends = new LengthAwarePaginator($currentItems, $friends->count(), $perPage, $currentPage, [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+            ]);
+
+            $viewData = ['users' => $paginatedFriends, 'query' => null, 'user' => $user, 'isSearch' => false];
+        }
+
+        return view('friends.index', $viewData);
     }
 
     public function sendRequest(User $user)
@@ -69,5 +84,11 @@ class FriendController extends Controller
         }
 
         return back()->with('status', 'Запрос в друзья отклонен.');
+    }
+
+    public function pendingRequests()
+    {
+        $requests = Auth::user()->friendRequests()->with('user')->get();
+        return response()->json($requests);
     }
 }

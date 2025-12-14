@@ -19,6 +19,7 @@ Route::get('/about', function () {
 Route::get('/search', [\App\Http\Controllers\MovieController::class, 'search'])->name('search');
 
 Route::get('/users/{user}', [\App\Http\Controllers\UserController::class, 'show'])->name('users.show');
+Route::get('/users/{user}/watched', [\App\Http\Controllers\UserController::class, 'watched'])->name('users.watched');
 
 Route::get('register', [AuthController::class, 'registerView'])->name('register.view');
 Route::post('register', [AuthController::class, 'register'])->name('register');
@@ -57,6 +58,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/messages', [\App\Http\Controllers\MessageController::class, 'index'])->name('messages.index');
     Route::get('/messages/{user}', [\App\Http\Controllers\MessageController::class, 'show'])->name('messages.show');
     Route::post('/messages/{user}', [\App\Http\Controllers\MessageController::class, 'store'])->name('messages.store');
+
+    Route::post('/movies/{movie}/rate', [\App\Http\Controllers\MovieController::class, 'rate'])->name('movies.rate');
+    Route::get('/notifications/friend-requests', [\App\Http\Controllers\FriendController::class, 'pendingRequests'])->name('notifications.friend-requests');
 });
 
 // Admin Routes

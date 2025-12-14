@@ -25,8 +25,11 @@ class ViewServiceProvider extends ServiceProvider
     {
         View::composer('layouts.app', function ($view) {
             if (Auth::check()) {
-                $unreadMessagesCount = Message::where('receiver_id', Auth::id())->whereNull('read_at')->count();
-                $view->with('unreadMessagesCount', $unreadMessagesCount);
+                $user = Auth::user();
+                $unreadMessagesCount = Message::where('receiver_id', $user->id)->whereNull('read_at')->count();
+                $pendingFriendRequestsCount = $user->friendRequests()->count();
+                $view->with('unreadMessagesCount', $unreadMessagesCount)
+                     ->with('pendingFriendRequestsCount', $pendingFriendRequestsCount);
             }
         });
     }
